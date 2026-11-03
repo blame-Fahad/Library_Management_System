@@ -1,0 +1,6 @@
+{
+  "name": "Smart Library Management System",
+  "description": "Comprehensive digital library management system featuring multi-role access (Admin, Librarian, Student), automated issue/return workflows, overdue fine tracking, digital library cards, and AI-powered book recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
