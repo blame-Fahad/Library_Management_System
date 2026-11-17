@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Books - Smart Library{% endblock %}
+
+{% block content %}
+<div class="search-section">
+  <h2 style="margin-bottom: 1rem; color: var(--primary-color);">🔍 Smart AI Book Search &amp; Catalog</h2>
+  
+  <form action="{{ url_for('book_list') }}" method="GET" class="search-form">
+    <input 
+      type="text" 
+      name="search" 
+      class="search-input" 
+      placeholder="Type book title, author, topic, or keyword (e.g., 'python algorithms', 'physics')..." 
+      value="{{ search_query }}"
+    >
+
+    <select name="category" class="filter-select">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="btn btn-ai">AI Search</button>
+    
+    {% if search_query or selected_category %}
+      <a href="{{ url_for('book_list') }}" class="btn btn-secondary">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Search Results Header -->
+<div class="section-title">
+  {% if search_query %}
+    Search Results for "{{ search_query }}" ({{ books|length }} books found)
+  {% elif selected_category %}
+    Category: "{{ selected_category }}" ({{ books|length }} books)
+  {% else %}
+    All Library Books ({{ books|length }} books)
+  {% endif %}
+</div>
+
+{% if not books %}
+  <div style="background: white; padding: 2rem; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+    <p style="font-size: 1.1rem; color: #64748b;">No books found matching your criteria.</p>
+    <a href="{{ url_for('book_list') }}" class="btn btn-primary" style="margin-top: 1rem;">View All Books</a>
+  </div>
+{% else %}
+  <div class="book-grid">
+    {% for book in books %}
+    <div class="book-card">
+      <div class="book-cover" style="background-color: {{ book.cover_color or '#334155' }};">
+        📖
+        <span class="book-category-pill">{{ book.category }}</span>
+        {% if book.relevance_score %}
+          <span class="ai-match-tag" style="position: absolute; bottom: 8px; left: 8px; font-size: 0.75rem;">
+            Score: {{ book.relevance_score }}
+          </span>
+        {% endif %}
+      </div>
+      <div class="book-body">
+        <h4 class="book-title">{{ book.title }}</h4>
+        <p class="book-author">by {{ book.author }}</p>
+        <p class="book-desc">{{ book.description }}</p>
+        <div class="book-footer">
+          <a href="{{ url_for('book_details', book_id=book.id) }}" class="btn btn-sm btn-primary">Details</a>
+          
+          {% if book.available_copies > 0 %}
+            <span class="badge badge-success">{{ book.available_copies }} of {{ book.total_copies }} Left</span>
+          {% else %}
+            <span class="badge badge-danger">Borrowed Out</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% endblock %}

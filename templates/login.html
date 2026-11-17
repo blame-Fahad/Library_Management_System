@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Smart Library{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <h2 class="form-title">🔐 Library Login</h2>
+  
+  <form action="{{ url_for('login') }}" method="POST">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" style="padding: 10px; font-size: 1rem; margin-top: 1rem;">
+      Log In
+    </button>
+  </form>
+
+  <p style="text-align: center; margin-top: 1.2rem; font-size: 0.9rem; color: #64748b;">
+    Don't have an account? <a href="{{ url_for('register') }}" style="color: var(--primary-light); font-weight: 600;">Register as Student</a>
+  </p>
+
+  <!-- Quick Demo Credentials Box for easy evaluation -->
+  <div style="margin-top: 1.5rem; padding: 1rem; background-color: #f1f5f9; border-radius: 6px; font-size: 0.85rem; border-left: 3px solid var(--primary-light);">
+    <strong>💡 Demo Accounts for Testing:</strong>
+    <ul style="margin-left: 1.2rem; margin-top: 5px;">
+      <li><strong>Admin / Librarian:</strong> <code>admin</code> / <code>admin123</code></li>
+      <li><strong>Student:</strong> <code>student1</code> / <code>student123</code></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

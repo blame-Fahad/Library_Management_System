@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Book - Admin{% endblock %}
+
+{% block content %}
+<div class="form-card" style="max-width: 650px;">
+  <h2 class="form-title">➕ Add New Book to Library</h2>
+
+  <form action="{{ url_for('add_book') }}" method="POST">
+    <div class="form-group">
+      <label for="title">Book Title *</label>
+      <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Python Crash Course" required>
+    </div>
+
+    <div style="display: flex; gap: 15px;">
+      <div class="form-group" style="flex: 1;">
+        <label for="author">Author *</label>
+        <input type="text" id="author" name="author" class="form-control" placeholder="e.g. Eric Matthes" required>
+      </div>
+
+      <div class="form-group" style="flex: 1;">
+        <label for="category">Category / Genre *</label>
+        <input type="text" id="category" name="category" class="form-control" placeholder="e.g. Computer Science" required>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 15px;">
+      <div class="form-group" style="flex: 1;">
+        <label for="isbn">ISBN Number *</label>
+        <input type="text" id="isbn" name="isbn" class="form-control" placeholder="e.g. 978-1593279288" required>
+      </div>
+
+      <div class="form-group" style="flex: 1;">
+        <label for="total_copies">Total Copies</label>
+        <input type="number" id="total_copies" name="total_copies" class="form-control" value="3" min="1" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Book Description / Keywords (Used by AI Recommender)</label>
+      <textarea id="description" name="description" class="form-control" rows="4" placeholder="Brief summary of topics, algorithms, or storyline..."></textarea>
+      <small style="color: #64748b; font-size: 0.8rem;">
+        💡 Tip: The AI Recommendation engine uses this description and keywords to suggest relevant books to students.
+      </small>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-success" style="flex: 1;">Save Book</button>
+      <a href="{{ url_for('manage_books') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

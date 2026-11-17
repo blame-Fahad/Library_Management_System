@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Borrow Records &amp; Overdue Fines - Admin{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
+  <div>
+    <h1 style="font-size: 1.8rem; color: var(--primary-color);">📋 Borrow Records &amp; Overdue Tracking</h1>
+    <p style="color: var(--text-muted);">Manage student loans, monitor return deadlines, and calculate fines.</p>
+  </div>
+  <a href="{{ url_for('admin_issue_book') }}" class="btn btn-success">📤 Issue New Book</a>
+</div>
+
+<!-- Filter Tabs -->
+<div style="display: flex; gap: 8px; margin-bottom: 1.5rem;">
+  <a href="{{ url_for('admin_issues', status='all') }}" class="btn btn-sm {% if current_filter == 'all' %}btn-primary{% else %}btn-secondary{% endif %}">
+    All Records ({{ records|length }})
+  </a>
+  <a href="{{ url_for('admin_issues', status='issued') }}" class="btn btn-sm {% if current_filter == 'issued' %}btn-primary{% else %}btn-secondary{% endif %}">
+    Currently Issued
+  </a>
+  <a href="{{ url_for('admin_issues', status='returned') }}" class="btn btn-sm {% if current_filter == 'returned' %}btn-primary{% else %}btn-secondary{% endif %}">
+    Returned Books
+  </a>
+</div>
+
+<div class="table-container">
+  {% if records %}
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Book Title</th>
+        <th>Issue Date</th>
+        <th>Due Date</th>
+        <th>Status &amp; Overdue Fine</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in records %}
+      <tr>
+        <td>#{{ item.id }}</td>
+        <td>
+          <strong>{{ item.student_name }}</strong>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">{{ item.student_email }}</div>
+        </td>
+        <td><strong>{{ item.book_title }}</strong></td>
+        <td>{{ item.issue_date }}</td>
+        <td><strong>{{ item.due_date }}</strong></td>
+        <td>
+          {% if item.status == 'issued' %}
+            {% if item.days_late > 0 %}
+              <span class="badge badge-danger">⚠️ {{ item.days_late }} Days Overdue</span>
+              <div style="color: #dc2626; font-size: 0.85rem; font-weight: bold; margin-top: 3px;">
+                Fine: ${{ "%.2f"|format(item.current_fine) }} (Tk {{ "%.2f"|format(item.current_fine) }})
+              </div>
+            {% else %}
+              <span class="badge badge-warning">Active (On Time)</span>
+            {% endif %}
+          {% else %}
+            <span class="badge badge-success">Returned on {{ item.return_date }}</span>
+            {% if item.fine_amount > 0 %}
+              <div style="font-size: 0.8rem; color: #dc2626; font-weight: bold; margin-top: 3px;">
+                Fine Paid: ${{ "%.2f"|format(item.fine_amount) }}
+              </div>
+            {% endif %}
+          {% endif %}
+        </td>
+        <td>
+          {% if item.status == 'issued' %}
+            <form action="{{ url_for('return_book', record_id=item.id) }}" method="POST" onsubmit="return confirmReturn('{{ item.book_title }}')">
+              <button type="submit" class="btn btn-sm btn-primary">Mark Returned</button>
+            </form>
+          {% else %}
+            <span style="color: #64748b; font-size: 0.85rem;">Completed</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+    No borrow records found matching this filter.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

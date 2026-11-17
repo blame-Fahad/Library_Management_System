@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Smart Library Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero">
+  <h1>Welcome to the Smart Library System</h1>
+  <p>Search books, track borrowing history, receive intelligent AI-powered book recommendations, and avoid overdue fines automatically.</p>
+  
+  <a href="{{ url_for('book_list') }}" class="btn btn-ai" style="padding: 10px 24px; font-size: 1.1rem;">
+    🔍 Explore All Books &amp; AI Search
+  </a>
+
+  <!-- Live Statistics -->
+  <div class="hero-stats">
+    <div class="hero-stat-card">
+      <h3>{{ total_books }}</h3>
+      <p>Total Book Titles</p>
+    </div>
+    <div class="hero-stat-card">
+      <h3>{{ total_students }}</h3>
+      <p>Registered Students</p>
+    </div>
+    <div class="hero-stat-card">
+      <h3>{{ active_loans }}</h3>
+      <p>Active Borrowed</p>
+    </div>
+  </div>
+</div>
+
+<!-- AI Personalized Recommendations (If student is logged in) -->
+{% if session.get('role') == 'student' and recommendations %}
+<div class="ai-recommendation-box">
+  <div class="ai-recommendation-header">
+    <h3>✨ AI Recommendations For You</h3>
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-sm btn-ai">View All in Dashboard</a>
+  </div>
+  <p style="font-size: 0.9rem; color: #5b21b6; margin-bottom: 1rem;">
+    Based on your previous borrowing history and preferred reading categories:
+  </p>
+
+  <div class="book-grid" style="margin-bottom: 0;">
+    {% for book in recommendations %}
+    <div class="book-card">
+      <div class="book-cover" style="background-color: {{ book.cover_color or '#4f46e5' }};">
+        📖
+        <span class="ai-match-tag" style="position: absolute; top: 10px; right: 10px;">{{ book.match_score }}% Match</span>
+      </div>
+      <div class="book-body">
+        <h4 class="book-title">{{ book.title }}</h4>
+        <p class="book-author">by {{ book.author }}</p>
+        <span class="ai-reason">{{ book.recommendation_reason }}</span>
+        <div class="book-footer" style="margin-top: 15px;">
+          <a href="{{ url_for('book_details', book_id=book.id) }}" class="btn btn-sm btn-primary">Details</a>
+          {% if book.available_copies > 0 %}
+            <span class="badge badge-success">{{ book.available_copies }} In Stock</span>
+          {% else %}
+            <span class="badge badge-danger">Out of Stock</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Featured Books -->
+<div class="section-title">
+  📚 Featured Books in Library
+</div>
+
+<div class="book-grid">
+  {% for book in featured_books %}
+  <div class="book-card">
+    <div class="book-cover" style="background-color: {{ book.cover_color or '#2c3e50' }};">
+      📖
+      <span class="book-category-pill">{{ book.category }}</span>
+    </div>
+    <div class="book-body">
+      <h4 class="book-title">{{ book.title }}</h4>
+      <p class="book-author">by {{ book.author }}</p>
+      <p class="book-desc">{{ book.description }}</p>
+      <div class="book-footer">
+        <a href="{{ url_for('book_details', book_id=book.id) }}" class="btn btn-sm btn-primary">View Book</a>
+        {% if book.available_copies > 0 %}
+          <span class="badge badge-success">{{ book.available_copies }} Available</span>
+        {% else %}
+          <span class="badge badge-danger">Out of Stock</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

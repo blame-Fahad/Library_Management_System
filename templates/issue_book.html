@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Issue Book - Admin{% endblock %}
+
+{% block content %}
+<div class="form-card" style="max-width: 550px;">
+  <h2 class="form-title">📤 Issue Book to Student</h2>
+
+  <form action="{{ url_for('admin_issue_book') }}" method="POST">
+    <div class="form-group">
+      <label for="student_id">Select Registered Student *</label>
+      <select name="student_id" id="student_id" class="form-control" required>
+        <option value="">-- Choose Student --</option>
+        {% for student in students %}
+          <option value="{{ student.id }}">{{ student.full_name }} ({{ student.username }})</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="book_id">Select Available Book *</label>
+      <select name="book_id" id="book_id" class="form-control" required>
+        <option value="">-- Choose Book --</option>
+        {% for book in books %}
+          <option value="{{ book.id }}">{{ book.title }} ({{ book.available_copies }} left in stock)</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="background-color: #f8fafc; padding: 12px; border-radius: 6px; font-size: 0.85rem; color: #475569; margin-bottom: 1.2rem; border-left: 3px solid var(--primary-light);">
+      📅 <strong>Standard Loan Policy:</strong>
+      <ul style="margin-left: 1.2rem; margin-top: 4px;">
+        <li>Issue duration: <strong>14 days</strong></li>
+        <li>Automatic overdue fine: <strong>$5.00 (Tk 5.00) / day</strong> after due date</li>
+      </ul>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button type="submit" class="btn btn-success" style="flex: 1;">Confirm &amp; Issue Book</button>
+      <a href="{{ url_for('admin_issues') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
